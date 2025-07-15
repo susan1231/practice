@@ -1,0 +1,93 @@
+Fedora Commands for Maven Project Setup
+1. Install Java JDK (v21 recommended)
+bash
+Copy
+Edit
+sudo dnf install java-21-openjdk-devel
+Verify installation:
+
+bash
+Copy
+Edit
+java -version
+2. Install Apache Maven
+Option A: Install via DNF (easier)
+bash
+Copy
+Edit
+sudo dnf install maven
+Check version:
+
+bash
+Copy
+Edit
+mvn -v
+Fedora repositories may not have the latest Maven version. If you need version 3.9.6 specifically, use Option B.
+
+Option B: Manual Installation (for Maven 3.9.6)
+bash
+Copy
+Edit
+cd ~/Downloads
+wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+sudo mkdir -p /opt/maven
+sudo tar -xvzf apache-maven-3.9.6-bin.tar.gz -C /opt/maven
+Set environment variables:
+
+Edit (or create) this file:
+
+bash
+Copy
+Edit
+sudo nano /etc/profile.d/maven.sh
+Add:
+
+bash
+Copy
+Edit
+export MAVEN_HOME=/opt/maven/apache-maven-3.9.6
+export PATH=$MAVEN_HOME/bin:$PATH
+Make it executable and reload:
+
+bash
+Copy
+Edit
+sudo chmod +x /etc/profile.d/maven.sh
+source /etc/profile.d/maven.sh
+Verify:
+
+bash
+Copy
+Edit
+mvn -v
+3. Create a Maven Project
+bash
+Copy
+Edit
+mvn archetype:generate -DgroupId=com.example -DartifactId=demo-project -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+4. Add a Dependency (e.g., Gson)
+Edit demo-project/pom.xml and add inside <dependencies>:
+
+xml
+Copy
+Edit
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.10.1</version>
+</dependency>
+5. Build the Maven Project
+bash
+Copy
+Edit
+cd demo-project
+mvn compile
+mvn test
+mvn package
+6. Run the JAR file
+If App.java has a main() method:
+
+bash
+Copy
+Edit
+java -cp target/demo-project-1.0-SNAPSHOT.jar com.example.App
