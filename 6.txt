@@ -1,0 +1,138 @@
+Step 1: Install Java JDK (preferably v21)
+bash
+Copy
+Edit
+sudo dnf install java-21-openjdk java-21-openjdk-devel
+java -version
+Step 2: Install Maven
+bash
+Copy
+Edit
+sudo dnf install maven
+mvn -v
+If you need a specific Maven version manually:
+
+bash
+Copy
+Edit
+cd /opt
+sudo wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+sudo tar -xvzf apache-maven-3.9.6-bin.tar.gz
+sudo ln -s /opt/apache-maven-3.9.6 /opt/maven
+Add to PATH (permanently):
+
+bash
+Copy
+Edit
+echo 'export MAVEN_HOME=/opt/maven' >> ~/.bashrc
+echo 'export PATH=$PATH:$MAVEN_HOME/bin' >> ~/.bashrc
+source ~/.bashrc
+Verify:
+
+bash
+Copy
+Edit
+mvn -v
+Step 3: Create a Maven Project
+bash
+Copy
+Edit
+mvn archetype:generate -DgroupId=com.example -DartifactId=demo-project \
+-DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+Step 4: Add Dependency to pom.xml
+Edit demo-project/pom.xml, and inside <dependencies>, add:
+
+xml
+Copy
+Edit
+<dependency>
+  <groupId>com.google.code.gson</groupId>
+  <artifactId>gson</artifactId>
+  <version>2.10.1</version>
+</dependency>
+Step 5: Build and Test
+bash
+Copy
+Edit
+cd demo-project
+mvn compile
+mvn test
+mvn package
+Step 6: Run the Application
+bash
+Copy
+Edit
+java -cp target/demo-project-1.0-SNAPSHOT.jar com.example.App
+✅ PART 2: Migrate to Gradle
+Step 1: Delete Maven Files
+bash
+Copy
+Edit
+cd demo-project
+rm pom.xml
+Leave src/ folder intact.
+
+Step 2: Install Gradle
+Option 1 (dnf):
+
+bash
+Copy
+Edit
+sudo dnf install gradle
+gradle -v
+Option 2 (manual):
+
+bash
+Copy
+Edit
+cd /opt
+sudo wget https://services.gradle.org/distributions/gradle-8.7-bin.zip
+sudo unzip gradle-8.7-bin.zip
+sudo ln -s /opt/gradle-8.7 /opt/gradle
+Set environment variable:
+
+bash
+Copy
+Edit
+echo 'export GRADLE_HOME=/opt/gradle' >> ~/.bashrc
+echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> ~/.bashrc
+source ~/.bashrc
+Step 3: Create Gradle Files
+demo-project/build.gradle:
+
+groovy
+Copy
+Edit
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+demo-project/settings.gradle:
+
+groovy
+Copy
+Edit
+rootProject.name = 'demo-project'
+Step 4: Build and Run
+bash
+Copy
+Edit
+cd demo-project
+gradle build
+gradle test
+java -cp build/libs/demo-project-1.0-SNAPSHOT.jar com.example.App
